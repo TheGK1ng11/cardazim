@@ -10,11 +10,10 @@ def send_data(server_ip, server_port, data: str):
     '''
     s = socket.socket()
     s.connect((server_ip, server_port))
-    enc = data.encode("utf-8")
-    length = len(enc)
-    data = struct.pack(f"<{length}s", enc)
+    bdata = data.encode("utf-8")
+    header = struct.pack("!I", len(data))
     print(data)
-    s.send(data)
+    s.send(header + bdata)
 
 
 def get_args():
