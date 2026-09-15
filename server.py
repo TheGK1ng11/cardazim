@@ -2,8 +2,17 @@ import argparse
 import sys
 import socket
 import struct
+import threading
 
 
+def print_data(text: bytes):
+    '''prints the data encoded on text'''
+    header = struct.calcsize("!I")
+    length = struct.unpack("!I", text[:header])[0] #finds the messeage length
+    data = text[header: header + length].decode("utf-8")
+    print(f"Recieved data: {data}")
+
+   
 def run_server(ip, port):
     ''' Recieves an IP address and a port and creates a socket to listen and
     print the data sent to said address'''
@@ -13,9 +22,9 @@ def run_server(ip, port):
             s.listen(5)
             conn, addr = s.accept()
             text = conn.recv(1024)
-            data = struct.unpack(f"<{len(text)}s", text)
-            data = data[0].decode()
-            print(f"Recieved data: {data}")
+            #thread = threading.Thread(target=print_data, args=(text,))
+            #thread.start()    
+            print_data(text)
 
 
 def get_args():
